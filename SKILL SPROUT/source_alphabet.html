@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Game Score</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #ffd700 0%, #ff6f61 50%, #42a5f5 100%);
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  #score-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 60px 50px;
+    width: 550px;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  }
+  h1 {
+    color: #00796b;
+    font-size: 60px;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  p {
+    font-size: 28px;
+    color: #004d40;
+    margin: 15px 0;
+    font-weight: 600;
+  }
+  button {
+    font-size: 24px;
+    padding: 14px 40px;
+    margin: 20px 8px 0;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 121, 107, 0.6);
+    color: white;
+    background-color: #00796b;
+    transition: background-color 0.3s ease;
+  }
+  button#exit-btn {
+    background-color: #d32f2f;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.6);
+  }
+  button:hover#exit-btn {
+    background-color: #b71c1c;
+  }
+  button:hover {
+    background-color: #004d40;
+  }
+</style>
+</head>
+<body>
+
+<div id="score-container" role="main" aria-label="Score results">
+  <h1>Your Score</h1>
+  <p><strong>Correct:</strong> <span id="correct">0</span></p>
+  <p><strong>Wrong:</strong> <span id="wrong">0</span></p>
+  <button id="replay-btn">Replay</button>
+  <button id="exit-btn">Quit</button>
+</div>
+
+<script>
+  const correct = localStorage.getItem('correctCount') || 0;
+  const wrong = localStorage.getItem('wrongCount') || 0;
+
+  document.getElementById('correct').textContent = correct;
+  document.getElementById('wrong').textContent = wrong;
+
+  document.getElementById('replay-btn').addEventListener('click', () => {
+    localStorage.removeItem('correctCount');
+    localStorage.removeItem('wrongCount');
+    window.location.href = 'index_alphabet.html';
+  });
+
+  document.getElementById('exit-btn').addEventListener('click', () => {
+    window.close();
+  });
+</script>
+
+</body>
+</html>
