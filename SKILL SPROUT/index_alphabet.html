@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alphabet Learning Game</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #ffd700 0%, #ff6f61 50%, #42a5f5 100%);
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  #intro, #game-container {
+    width: 550px;
+    padding: 60px 50px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+    text-align: center;
+  }
+  #intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #intro h1 {
+    font-size: 60px;
+    color: #00796b;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  #start-btn {
+    font-size: 24px;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 12px;
+    background-color: #00796b;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 121, 107, 0.6);
+    transition: background-color 0.3s ease;
+  }
+  #start-btn:hover {
+    background-color: #004d40;
+  }
+  #game-container {
+    display: none;
+  }
+  .alphabet-image {
+    width: 260px;
+    height: 260px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+  .letter {
+    font-size: 72px;
+    font-weight: bold;
+    color: #00796b;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+  .word {
+    font-size: 30px;
+    color: #004d40;
+    margin-bottom: 30px;
+    font-weight: 600;
+  }
+  input[type="text"] {
+    font-size: 28px;
+    padding: 10px;
+    width: 180px;
+    text-align: center;
+    border-radius: 8px;
+    border: 2px solid #00796b;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+  }
+  #feedback {
+    font-size: 26px;
+    font-weight: 600;
+    height: 40px;
+    color: #00796b;
+    margin-bottom: 15px;
+  }
+  #scorecard {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+  #restart-btn, #quit-btn {
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin: 0 5px;
+  }
+  #restart-btn {
+    background: #00796b;
+    display: none;
+  }
+  #restart-btn:hover {
+    background-color: #004d40;
+  }
+  #quit-btn {
+    background: #d32f2f;
+    display: none;
+    font-size: 28px;
+    padding: 14px 40px;
+    border-radius: 10px;
+    width: 140px;
+  }
+  #quit-btn:hover {
+    background: #b71c1c;
+  }
+</style>
+</head>
+<body>
+
+<div id="intro" aria-label="Alphabet learning game introduction">
+  <h1>Let Us Learn Alphabets!</h1>
+  <button id="start-btn" type="button" aria-label="Start the alphabet learning game">Start</button>
+</div>
+
+<div id="game-container" role="main" aria-live="polite" aria-label="Alphabet learning game">
+  <img id="alphabet-image" src="" alt="Alphabet image" class="alphabet-image" />
+  <div class="letter" id="letter"></div>
+  <div class="word" id="word"></div>
+
+  <input 
+    type="text" 
+    id="answer" 
+    maxlength="1" 
+    autocomplete="off" 
+    aria-describedby="feedback" 
+    autofocus 
+    aria-label="Input your answer for the letter"
+    placeholder="Type here"
+  />
+
+  <div id="feedback" role="alert" aria-live="assertive"></div>
+  <div id="scorecard" aria-live="polite">Correct: <span id="score-correct">0</span> | Wrong: <span id="score-wrong">0</span></div>
+  <button id="restart-btn" type="button">Restart</button>
+  <button id="quit-btn" type="button">Quit</button>
+</div>
+
+<script>
+  const alphabetEntries = [
+    { letter: 'A', word: 'Apple', image: 'images/apple.png', sound: 'sounds/a_for_apple.mp3' },
+    { letter: 'B', word: 'Ball', image: 'images/ball.png', sound: 'sounds/b_for_ball.mp3' },
+    { letter: 'C', word: 'Cat', image: 'images/cat.png', sound: 'sounds/c_for_cat.mp3' },
+    { letter: 'D', word: 'Dog', image: 'images/dog.png', sound: 'sounds/d_for_dog.mp3' },
+    { letter: 'E', word: 'Elephant', image: 'images/elephant.png', sound: 'sounds/e_for_elephant.mp3' },
+    { letter: 'F', word: 'Fish', image: 'images/fish.png', sound: 'sounds/f_for_fish.mp3' },
+    { letter: 'G', word: 'Grapes', image: 'images/grapes.png', sound: 'sounds/g_for_grapes.mp3' },
+    { letter: 'H', word: 'Heart', image: 'images/heart.png', sound: 'sounds/h_for_heart.mp3' },
+    { letter: 'I', word: 'Ice cream', image: 'images/icecream.png', sound: 'sounds/i_for_icecream.mp3' },
+    { letter: 'J', word: 'Jug', image: 'images/jug.png', sound: 'sounds/j_for_jug.mp3' },
+    { letter: 'K', word: 'Kite', image: 'images/kite.png', sound: 'sounds/k_for_kite.mp3' },
+    { letter: 'L', word: 'Leaf', image: 'images/leaf.png', sound: 'sounds/l_for_leaf.mp3' },
+    { letter: 'M', word: 'Mango', image: 'images/mango.png', sound: 'sounds/m_for_mango.mp3' },
+    { letter: 'N', word: 'Nest', image: 'images/nest.png', sound: 'sounds/n_for_nest.mp3' },
+    { letter: 'O', word: 'Orange', image: 'images/orange.png', sound: 'sounds/o_for_orange.mp3' },
+    { letter: 'P', word: 'Pencil', image: 'images/pencil.png', sound: 'sounds/p_for_penguin.mp3' },
+    { letter: 'Q', word: 'Question', image: 'images/question.png', sound: 'sounds/q_for_question.mp3' },
+    { letter: 'R', word: 'Rain', image: 'images/rain.png', sound: 'sounds/r_for_rain.mp3' },
+    { letter: 'S', word: 'Sun', image: 'images/sun.png', sound: 'sounds/s_for_sun.mp3' },
+    { letter: 'T', word: 'Tree', image: 'images/tree.png', sound: 'sounds/t_for_tree.mp3' },
+    { letter: 'U', word: 'Umbrella', image: 'images/umbrella.png', sound: 'sounds/u_for_umbrella.mp3' },
+    { letter: 'V', word: 'Vase', image: 'images/vase.png', sound: 'sounds/v_for_vase.mp3' },
+    { letter: 'W', word: 'Window', image: 'images/window.png', sound: 'sounds/w_for_window.mp3' },
+    { letter: 'X', word: 'Xmas', image: 'images/xmas.png', sound: 'sounds/x_for_xmas.mp3' },
+    { letter: 'Y', word: 'Yolk', image: 'images/yolk.png', sound: 'sounds/y_for_yolk.mp3' },
+    { letter: 'Z', word: 'Zebra', image: 'images/zebra.png', sound: 'sounds/z_for_zebra.mp3' },
+  ];
+
+  let currentIndex = 0;
+  let speaking = false;
+  let correctCount = 0;
+  let wrongCount = 0;
+  let maxAttempts = 3;
+  let attemptCount = 0;
+
+  const introDiv = document.getElementById('intro');
+  const startBtn = document.getElementById('start-btn');
+  const gameContainer = document.getElementById('game-container');
+  const imageEl = document.getElementById('alphabet-image');
+  const letterEl = document.getElementById('letter');
+  const wordEl = document.getElementById('word');
+  const answerInput = document.getElementById('answer');
+  const feedbackEl = document.getElementById('feedback');
+  const restartBtn = document.getElementById('restart-btn');
+  const quitBtn = document.getElementById('quit-btn');
+  const scoreCorrectEl = document.getElementById('score-correct');
+  const scoreWrongEl = document.getElementById('score-wrong');
+
+  startBtn.addEventListener('click', () => {
+    introDiv.style.display = 'none';
+    gameContainer.style.display = 'block';
+    restartBtn.style.display = 'none';
+    quitBtn.style.display = 'inline-block';
+    loadEntry(currentIndex);
+  });
+
+  quitBtn.addEventListener('click', () => {
+    // Save scores to localStorage and redirect to score page
+    localStorage.setItem('correctCount', correctCount);
+    localStorage.setItem('wrongCount', wrongCount);
+    window.location.href = 'score_alphabet.html';
+  });
+
+  function speak(text, callback) {
+    if ('speechSynthesis' in window && !speaking) {
+      speaking = true;
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.5;
+      utterance.pitch = 1.2;
+      utterance.lang = 'en-US';
+
+      utterance.onend = () => {
+        speaking = false;
+        if (callback) callback();
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } else if (callback) {
+      callback();
+    }
+  }
+
+  function speakSlowly(letter, word) {
+    speak(letter.toLowerCase(), () => {
+      setTimeout(() => {
+        speak('is for', () => {
+          setTimeout(() => {
+            speak(word);
+          }, 600);
+        });
+      }, 600);
+    });
+  }
+
+  function loadEntry(idx) {
+    const entry = alphabetEntries[idx];
+    imageEl.src = entry.image;
+    imageEl.alt = entry.word;
+    letterEl.textContent = entry.letter;
+    wordEl.textContent = entry.word;
+    feedbackEl.textContent = '';
+    answerInput.value = '';
+    answerInput.disabled = false;
+    answerInput.style.display = 'inline-block';
+    answerInput.focus();
+    restartBtn.style.display = 'none';
+    attemptCount = 0;
+    speakSlowly(entry.letter, entry.word);
+  }
+
+  answerInput.addEventListener('input', function() {
+    const val = this.value.trim().toUpperCase();
+    if (val.length === 1) {
+      checkAnswer(val);
+    }
+  });
+
+  function checkAnswer(userAnswer) {
+    const correctLetter = alphabetEntries[currentIndex].letter;
+    if (userAnswer === correctLetter) {
+      correctCount++;
+      updateScorecard();
+      feedbackEl.textContent = "Great job! 🎉";
+      answerInput.disabled = true;
+      setTimeout(() => {
+        currentIndex++;
+        if (currentIndex >= alphabetEntries.length) {
+          imageEl.src = 'images/welldone.png';
+          letterEl.textContent = '';
+          wordEl.textContent = '';
+          feedbackEl.textContent = "Congratulations! You've learned all the letters! ";
+          answerInput.style.display = 'none';
+          restartBtn.style.display = 'inline-block';
+          quitBtn.style.display = 'none';
+        } else {
+          loadEntry(currentIndex);
+        }
+      }, 1500);
+    } else {
+      attemptCount++;
+      if (attemptCount < maxAttempts) {
+        feedbackEl.textContent = `Try again! (${maxAttempts - attemptCount} attempts left)`;
+        answerInput.value = '';
+        answerInput.focus();
+      } else {
+        wrongCount++;
+        updateScorecard();
+        feedbackEl.textContent = `The correct answer is '${correctLetter}'.`;
+        answerInput.disabled = true;
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex >= alphabetEntries.length) {
+            imageEl.src = 'images/welldone.png';
+            letterEl.textContent = '';
+            wordEl.textContent = '';
+            feedbackEl.textContent = "Congratulations! You've learned all the letters! <br>";
+            answerInput.style.display = 'none';
+            restartBtn.style.display = 'inline-block';
+            quitBtn.style.display = 'none';
+          } else {
+            loadEntry(currentIndex);
+          }
+        }, 1800);
+      }
+    }
+  }
+
+  restartBtn.addEventListener('click', () => {
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    updateScorecard();
+    feedbackEl.textContent = '';
+    loadEntry(currentIndex);
+    restartBtn.style.display = 'none';
+    quitBtn.style.display = 'inline-block';
+    answerInput.style.display = 'inline-block';
+    answerInput.disabled = false;
+    answerInput.value = '';
+  });
+
+  function updateScorecard() {
+    scoreCorrectEl.textContent = correctCount;
+    scoreWrongEl.textContent = wrongCount;
+  }
+
+  letterEl.addEventListener('mouseenter', () => {
+    speakSlowly(letterEl.textContent, wordEl.textContent);
+  });
+
+  imageEl.addEventListener('mouseenter', () => {
+    speakSlowly(letterEl.textContent, wordEl.textContent);
+  });
+</script>
+</body>
+</html>
