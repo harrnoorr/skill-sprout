@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Circle & Hover Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #51e70c, #51e70c);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: url("image3.jpg") no-repeat center center/cover;
+        }
+
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+             background: url("image2.jpg") no-repeat center center/cover;
+        }
+       
+        /*.hero-section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100px; 
+  background: linear-gradient(
+    to bottom,
+    rgba(253,213,64,0) 0%,
+    rgba(253,213,64,1) 100%
+  ); 
+  pointer-events: none;
+}*/
+        .rotating-circle {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear;
+        }
+
+        .circle-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform-style: preserve-3d;
+        }
+
+        .circle-text span {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform-origin: 0 150px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #eff309, 0 0 20px #f3f712;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotateY(0deg) rotateX(30deg);
+            }
+            to {
+                transform: rotateY(360deg) rotateX(30deg);
+            }
+        }
+
+        .gallery-section {
+            padding: 80px 20px;
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: #51e70c;
+            background: url("image4.jpg") no-repeat center center/cover;
+
+
+        }
+
+        
+        .gallery-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    background: linear-gradient(90deg, #050505, #858f91);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+}
+
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            aspect-ratio: 4/3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .hover-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 255, 136, 0.9), rgba(0, 200, 255, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all 0.5s ease;
+            border-radius: 15px;
+        }
+
+        .gallery-item:hover .hover-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hover-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #0f0f23;
+            text-align: center;
+        }
+
+        .hover-description {
+            font-size: 1rem;
+            color: #1a1a2e;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .rotating-circle {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .circle-text span {
+                transform-origin: 0 100px;
+                font-size: 14px;
+            }
+            
+            .gallery-title {
+                font-size: 2rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 1rem;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="rotating-circle">
+            <div class="circle-text">
+                <!-- Text positioned around the circle -->
+                <span style="transform: rotate(0deg)">Creative</span>
+                <span style="transform: rotate(45deg)">Explore</span>
+                <span style="transform: rotate(90deg)">Growth</span>
+                <span style="transform: rotate(135deg)">Magic</span>
+                <span style="transform: rotate(180deg)">Strong</span>
+                <span style="transform: rotate(225deg)">Empower</span>
+                <span style="transform: rotate(270deg)">Joyful</span>
+                <span style="transform: rotate(315deg)">Dreams</span>
+            </div>
+        </div>
+        <div class="scroll-indicator">Scroll Down to Explore</div>
+    </section>
+
+    <section class="gallery-section">
+        <h2 class="gallery-title">We provide a safe, fun, and creative space for special minds to explore, learn, and grow...</h2>
+        <div class="gallery-grid">
+            <!-- Image 1 -->
+            <div class="gallery-item">
+                <img src="gal1.jpg" alt="Joyful Learning" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Fun Learning</h3>
+                    <p class="hover-description">We believe learning should always be joyful!<br> Our activities spark creativity, teamwork, and curiosity—helping every child grow while having fun.</p>
+                </div>
+            </div>
+
+            <!-- Image 2 -->
+            <div class="gallery-item">
+                <img src="gal2.jpg" alt="Diffrent Games" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Play Zone</h3>
+                    <p class="hover-description">Learning becomes easier when it feels like play! <br>With our fun and accessible games, every learner can explore, grow, and enjoy at their own pace.</p>
+                </div>
+            </div>
+
+            <!-- Image 3 -->
+            <div class="gallery-item">
+                <img src="gal5.jpg" alt="Parents/Teacher Involvement" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Parental/Teacher Involvement</h3>
+                    <p class="hover-description">Simple tools to help parents and teachers track learning and support the child’s journey.</p>
+                </div>
+            </div>
+            
+
+            <!-- Image 4 -->
+            <div class="gallery-item">
+                <img src="gal4.jpg" alt="Easy and accesible design" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Accessible Design</h3>
+                    <p class="hover-description">The soft colors and friendly icons represent care, love, and achievement. <br>Our mission is to provide a supportive and inclusive space where every special child can learn, grow, and shine with happiness.</p>
+                </div>
+            </div>
+
+            <!-- Image 5 -->
+            <div class="gallery-item">
+                <img src="gal3.jpg" alt="Minimalist design with clean lines and soothing pastel colors" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Growth Tracker</h3>
+                    <p class="hover-description">Learning is a journey, not a race!<br> Our progress report highlights your growth at your own pace, with every little achievement shining bright.</p>
+                </div>
+            </div>
+
+            <!-- Image 6 -->
+            <div class="gallery-item">
+                <img src="gal6.jpg" alt="Offline activities" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Offline Interface</h3>
+                    <p class="hover-description">A simple, easy-to-use setup that lets children access certain activities and learning tools even without an internet connection.</p>
+                </div>
+            </div>
+
+            <!-- Image 7 -->
+            <div class="gallery-item">
+                <img src="gal7.jpg" alt="Cosmic theme with starry night sky and galactic elements" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Inclusive For Everyone</h3>
+                    <p class="hover-description">The games are designed keeping specially challenged chidren in mind,so everyone feels included and supported.</p>
+                </div>
+            </div>
+
+            <!-- Image 8 -->
+            <div class="gallery-item">
+                <img src="gal8.jpg" alt="Cosmic theme with starry night sky and galactic elements" class="gallery-image">
+                <div class="hover-content">
+                    <h3 class="hover-title">Happy Learning</h3>
+                    <p class="hover-description">The goal is not just teaching but also spreading happiness,kindness and confidence through fun games.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
