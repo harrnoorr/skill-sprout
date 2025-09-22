@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Portal - Login/Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background:white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #ffdd64;
+            padding: 30px 20px;
+            text-align: center;
+            color: black;
+        }
+        
+        .header h1 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ffdd64;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 500;
+            color: black;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: black;
+            border-bottom: 2px solid #ffdd64;
+        }
+        
+        .form-container {
+            padding: 20px 30px 30px;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        #step-1 {
+            display: block;
+            text-align: center;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .user-type {
+            flex: 1;
+            border: 2px solid #ffdd64;
+            border-radius: 10px;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .user-type:hover {
+            border-color: black;
+        }
+        
+        .user-type.selected {
+            border-color: black;
+            background-color: rgba(118, 75, 162, 0.05);
+        }
+        
+        .user-type i {
+            font-size: 28px;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: black;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: #764ba2;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+        }
+        
+        .btn {
+            background: #ffdd64;
+            color: black;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #e6e6e6;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-footer a {
+            color: #764ba2;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .user-type-selector {
+                flex-direction: column;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SkillSprout</h1>
+            <p>Fun learning for every child- <i>Explore, Play, Grow!</i></p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" id="login-tab">Login</div>
+            <div class="tab" id="signup-tab">Sign Up</div>
+        </div>
+        
+        <div class="form-container">
+            <!-- Step 1: User Type Selection -->
+            <div class="form-step" id="step-1">
+                <h2>Who are you?</h2>
+                <p>Please select your role to continue</p>
+                
+                <div class="user-type-selector">
+                    <div class="user-type" data-type="parent">
+                        👨‍👩‍👧‍👦
+                        <h3>Parent</h3>
+                        <p>Manage family accounts</p>
+                    </div>
+                    <div class="user-type" data-type="user">
+                        👤
+                        <h3>User</h3>
+                        <p>Child or family member</p>
+                    </div>
+                </div>
+                
+                <button class="btn" id="continue-btn" disabled>Continue</button>
+            </div>
+            
+            <!-- Step 2: Login Form -->
+            <div class="form-step" id="step-2-login">
+                <h2>Login as <span id="login-role"></span></h2>
+                
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                
+                <div class="form-group">
+                    <a href="#" style="float: right; color: #764ba2; text-decoration: none;">Forgot Password?</a>
+                </div>
+                
+                <button class="btn">Login</button>
+                <button class="btn btn-secondary back-btn">Back</button>
+            </div>
+            
+            <!-- Step 2: Signup Form for Parent -->
+            <div class="form-step" id="step-2-signup-parent">
+                <h2>Create Parent Account</h2>
+                
+                <div class="form-group">
+                    <label for="parent-name">Full Name</label>
+                    <input type="text" id="parent-name" placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parent-email">Email Address</label>
+                    <input type="email" id="parent-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parent-password">Password</label>
+                    <input type="password" id="parent-password" placeholder="Create a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parent-confirm-password">Confirm Password</label>
+                    <input type="password" id="parent-confirm-password" placeholder="Confirm your password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parent-phone">Phone Number</label>
+                    <input type="tel" id="parent-phone" placeholder="Enter your phone number">
+                </div>
+                
+                <button class="btn">Create Account</button>
+                <button class="btn btn-secondary back-btn">Back</button>
+            </div>
+            
+            <!-- Step 2: Signup Form for User -->
+            <div class="form-step" id="step-2-signup-user">
+                <h2>Create User Account</h2>
+                
+                <div class="form-group">
+                    <label for="user-name">Full Name</label>
+                    <input type="text" id="user-name" placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="user-email">Email Address</label>
+                    <input type="email" id="user-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="user-password">Password</label>
+                    <input type="password" id="user-password" placeholder="Create a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="user-confirm-password">Confirm Password</label>
+                    <input type="password" id="user-confirm-password" placeholder="Confirm your password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="user-age">Age</label>
+                    <input type="number" id="user-age" placeholder="Enter your age" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="user-grade">Grade/Class</label>
+                    <input type="text" id="user-grade" placeholder="Enter your grade or class">
+                </div>
+                
+                <button class="btn">Create Account</button>
+                <button class="btn btn-secondary back-btn">Back</button>
+            </div>
+            
+            <div class="form-footer">
+                By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const userTypes = document.querySelectorAll('.user-type');
+            const continueBtn = document.getElementById('continue-btn');
+            const steps = document.querySelectorAll('.form-step');
+            const backBtns = document.querySelectorAll('.back-btn');
+            const loginRole = document.getElementById('login-role');
+            
+            let currentUserType = null;
+            let isLogin = true;
+            
+            // Tab switching
+            loginTab.addEventListener('click', () => {
+                setActiveTab(true);
+            });
+            
+            signupTab.addEventListener('click', () => {
+                setActiveTab(false);
+            });
+            
+            // User type selection
+            userTypes.forEach(type => {
+                type.addEventListener('click', () => {
+                    userTypes.forEach(t => t.classList.remove('selected'));
+                    type.classList.add('selected');
+                    currentUserType = type.getAttribute('data-type');
+                    continueBtn.disabled = false;
+                });
+            });
+            
+            // Continue button
+            continueBtn.addEventListener('click', () => {
+                if (!currentUserType) return;
+                
+                // Hide all steps
+                steps.forEach(step => step.style.display = 'none');
+                
+                if (isLogin) {
+                    // Show login form
+                    document.getElementById('step-2-login').style.display = 'block';
+                    loginRole.textContent = currentUserType;
+                } else {
+                    // Show appropriate signup form
+                    if (currentUserType === 'parent') {
+                        document.getElementById('step-2-signup-parent').style.display = 'block';
+                    } else {
+                        document.getElementById('step-2-signup-user').style.display = 'block';
+                    }
+                }
+            });
+            
+            // Back buttons
+            backBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Hide all steps
+                    steps.forEach(step => step.style.display = 'none');
+                    
+                    // Show step 1
+                    document.getElementById('step-1').style.display = 'block';
+                });
+            });
+            
+            function setActiveTab(login) {
+                isLogin = login;
+                
+                if (login) {
+                    loginTab.classList.add('active');
+                    signupTab.classList.remove('active');
+                } else {
+                    loginTab.classList.remove('active');
+                    signupTab.classList.add('active');
+                }
+                
+                // Reset user selection when switching tabs
+                userTypes.forEach(t => t.classList.remove('selected'));
+                currentUserType = null;
+                continueBtn.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
