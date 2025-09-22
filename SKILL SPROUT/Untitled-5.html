@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Emotion Recognition Game</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+
+    /* Body and Background */
+    body {
+      font-family: 'Comfortaa', Arial, sans-serif;
+      background-image: url('C:/Users/USER/Downloads/generated-image (1).png');
+      background-repeat: no-repeat;
+      background-size: cover;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Container */
+    #container {
+      max-width: 1000px;
+      width: 90vw;
+      background: beige;
+      padding: 2.4em 2em 3em 2em;
+      border-radius: 24px;
+      border: 2px solid black;
+      box-shadow: 0 8px 20px rgba(70, 130, 180, 0.15);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* Title */
+    h1 {
+      font-weight: 700;
+      font-size: 1.9rem;
+      color: #3a5f9e;
+      margin-bottom: 0.8em;
+      text-align: center;
+    }
+
+    /* Emotion Card */
+    .emotion-card {
+      margin: 2em auto;
+      background: #e2efff;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px #c0d2f7aa;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .emotion-card.anim-correct {
+      animation: popGlow 0.8s ease forwards;
+    }
+    .emotion-card.anim-wrong {
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes popGlow {
+      0% { transform: scale(1); box-shadow: 0 10px 20px #c0d2f7aa; }
+      50% { transform: scale(1.15); box-shadow: 0 0 40px 10px #5aa8ffcc; }
+      100% { transform: scale(1); box-shadow: 0 10px 20px #c0d2f7aa; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-12px); }
+      40%, 80% { transform: translateX(12px); }
+    }
+
+    /* Image styling */
+    .emotion-img {
+      width: 240px;
+      height: 200px;
+      border-radius: 20px;
+      object-fit: contain;
+      margin-bottom: 1.1em;
+      box-shadow: 0 5px 12px #a9bff0aa;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Emotion Label */
+    .emotion-label {
+      width: 150%;
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: #1d3c78;
+      background: #b7d1ff;
+      padding: 0.35em 1.2em;
+      border-radius: 30px;
+      user-select: none;
+      box-shadow: inset 2px 2px 5px #91b1e9aa;
+      letter-spacing: 0.06em;
+      transition: background-color 0.3s ease;
+      text-align-last: center;
+      hyphens: auto;
+      word-break: break-word;
+    }
+    .emotion-label.happy {
+      background: #d3f1d8;
+      color: #23752e;
+      box-shadow: inset 2px 2px 6px #a8d9a0bb;
+    }
+    .emotion-label.sad {
+      background: #c2dffb;
+      color: #25408f;
+      box-shadow: inset 2px 2px 6px #9bbcfebc;
+    }
+    .emotion-label.angry {
+      background: #f6cdc8;
+      color: #8a1b18;
+      box-shadow: inset 2px 2px 6px #d99a93bb;
+    }
+
+    /* Buttons Shared Styling */
+    button,
+    .emotion-btn {
+      background: #3b71ca;
+      color: white;
+      border: none;
+      border-radius: 28px;
+      padding: 0.75em 2.6em;
+      font-size: 1.2rem;
+      font-weight: 700;
+      box-shadow: 0 5px 15px #2e56a3bb;
+      cursor: pointer;
+      margin-top: 1.8em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+
+    button:focus,
+    button:hover,
+    .emotion-btn:hover,
+    .emotion-btn:focus {
+      background: #274ea1;
+      outline: none;
+    }
+
+    /* Special Button IDs */
+    #start-btn {
+      background: #40b561;
+      box-shadow: 0 5px 15px #2f8e44cc;
+    }
+    #start-btn:hover,
+    #start-btn:focus {
+      background: #2e9932;
+    }
+    #next-btn {
+      background: #7ed957;
+      margin-top: 1.6em;
+      padding-left: 3em;
+      padding-right: 3em;
+      max-width: 340px;
+      width: 100%;
+    }
+    #next-btn:hover,
+    #next-btn:focus {
+      background: #61972e;
+      outline: none;
+    }
+
+    /* Emotion Button Variation */
+    .emotion-btn {
+      border-radius: 12px;
+      background: #4ea8de;
+      margin: 0.7em 0.4em;
+      max-width: 250px;
+      min-width: 140px;
+      width: auto;
+      box-shadow: 0 5px 12px rgba(57, 144, 220, 0.8);
+      font-size: 2rem;
+      padding: 0.9em 0.3em;
+      color: white;
+      transition: background-color 0.25s ease, box-shadow 0.25s ease;
+      user-select: none;
+    }
+    .emotion-btn:hover,
+    .emotion-btn:focus {
+      background: #2d72b1;
+      box-shadow: 0 6px 18px rgba(45, 114, 177, 0.9);
+      outline: none;
+    }
+    .emotion-btn.selected {
+      background: #275a7d;
+      box-shadow: 0 6px 18px rgba(39, 90, 125, 0.9);
+    }
+
+    /* SVG inside Button */
+    button svg {
+      width: 22px;
+      height: 22px;
+      margin-left: 8px;
+      fill: white;
+    }
+
+    /* Feedback Text */
+    #feedback {
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-top: 1.3em;
+      min-height: 2.5em;
+      color: #4a8f39;
+      text-align: center;
+    }
+
+    /* Button Group Layout */
+    #emotion-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 2em;
+      margin-bottom: 1em;
+    }
+
+    /* Scorecard */
+    #scorecard {
+      margin-top:0;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #2a5a2f;
+    }
+
+    /* Centering Container Helper */
+    .center-container {
+      display: flex;
+      justify-content: center;
+      margin-top: auto;
+      height: 20vh;
+    }
+
+    /* Responsive for Small Screens */
+    @media (max-width: 600px) {
+      #container { padding: 1.6em 1em 2.4em 1em; }
+      .emotion-card { width: 85vw; height: auto; }
+      .emotion-img { width: 65vw; height: auto; }
+      .emotion-label { font-size: 1.8rem; padding: 10px 20px; }
+      button, .emotion-btn {
+        width: 95%;
+        font-size: 1.1rem;
+        padding: 0.7em 0;
+        border-radius: 30px;
+        max-width: 100%;
+      }
+    }
+
+    /* Quit Page Styles */
+    #quit-page {
+      display: none;
+      background: linear-gradient(135deg, #f3d590,#ffeab9);
+      border-radius: 36px;
+      width: 480px;
+      margin: auto;
+      box-shadow: 0 14px 45px #dab03477;
+      padding: 2.5em 2.2em 3.2em 2.2em;
+      text-align: center;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    #quit-page .stars {
+      font-size: 2.1rem;
+      color: #b67b1b;
+      font-weight: 900;
+      text-shadow: 0 2px 8px #fff9;
+      margin-bottom: 1.2em;
+    }
+    #quit-page .game-over {
+      font-size: 2.7rem;
+      color: #da8c25;
+      font-weight: 900;
+      margin-bottom: 1.2em;
+    }
+    #quit-page .final-score-label {
+      font-size: 1.28rem;
+      color: #a86c3d;
+      font-weight: 700;
+      margin-bottom: 0.5em;
+    }
+    #quit-page .final-score {
+      font-size: 2.2rem;
+      color: #ff9d4b;
+      font-weight: 900;
+      margin-bottom: 1.3em;
+    }
+    #quit-page button {
+      margin: 0 14px 0 0;
+      background: #4ea8de;
+      color: white;
+      margin-top: 4%;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 22px;
+      padding: 12px 40px;
+      box-shadow: 0 4px 14px #3990dc55;
+      cursor: pointer;
+      transition: background-color 0.22s ease;
+    }
+    #quit-page button:last-child {
+      background: #d86d47;
+      box-shadow: 0 4px 14px #d86d47aa;
+      margin-left: 12px;
+    }
+    #quit-page button:hover {
+      background: #2d72b1;
+      color: #fff;
+    }
+    #quit-page .thanks {
+      margin-top: 2.2rem;
+      font-size: 1rem;
+      color: #907a4e;
+    }
+      @import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+    body .start-container {
+      background: linear-gradient(135deg, #b7eaff 0%, #ffeab9 100%);
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Comfortaa', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .start-container {
+      background: white;
+      padding: 2rem 2.5rem;
+      border-radius: 36px;
+      box-shadow: 0 16px 46px rgba(100,190,250,0.12);
+      max-width: 600px;
+      text-align: center;
+      position: relative;
+    }
+    .game-title {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: #63a4e4;
+      letter-spacing: 2px;
+      text-shadow:  0 2px 4px #f8f5;
+      margin-bottom: 0.7rem;
+    }
+    .game-title span {
+      display: block;
+      font-size: 2.2rem;
+      color: #f7b768;
+      text-shadow:  0 2px 6px #fff7;
+      margin-bottom: 0.7rem;
+    }
+    .avatars {
+      margin: 40px 0 32px;
+      display: flex;
+      justify-content: center;
+      gap: 34px;
+    }
+    .avatars img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #f7f7fa;
+      box-shadow: 0 4px 16px #e0e0e046;
+      object-fit: cover;
+    }
+    .start-btn {
+      font-family: 'Comfortaa', Arial, sans-serif;
+      background: linear-gradient(90deg, #fff298 10%, #aee7fc 80%);
+      color: #fb9c2a;
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      border: none;
+      border-radius: 34px;
+      padding: 22px 72px;
+      box-shadow: 0 8px 32px #fac87277;
+      margin-bottom: 7px;
+      margin-top: 12px;
+      transition: background 0.22s, transform 0.13s;
+      cursor: pointer;
+      outline: none;
+    }
+    .start-btn:hover {
+      background: linear-gradient(90deg, #ffe687 10%, #b7eaff 80%);
+      transform: scale(1.066);
+      color: #ea6817;
+    }
+    .adventure {
+      margin-top: 20px;
+      font-size: 1.19rem;
+      color: #7baed6;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 660px){
+      .start-container {padding:1rem 2vw; max-width:95vw;}
+      .game-title {font-size:2.2rem;}
+      .game-title span {font-size:1.7rem;}
+      .start-btn {font-size:1.5rem; padding: 13px 34px;}
+      .avatars img {width:57px;height:57px;}
+    }
+  </style>
+</head>
+<body>
+ 
+  <main id="container" aria-live="polite" role="main" tabindex="0">
+    
+    <section id="intro-module" aria-label="Emotion introduction module">
+      <h1>Learn About Emotions</h1>
+      <article class="emotion-card visible" id="emotion-card">
+        <img id="intro-face-img" src="" alt="Emotion face" draggable="false" aria-live="off" />
+        <div class="emotion-label" id="emotion-name"></div>
+      </article>
+      <div style="position:relative; height: 20vh;">
+        <button id="intro-next-btn" style="position:absolute;top:30%;height:10vh;" aria-label="Next emotion" onclick="nextIntroEmotion()">
+          Next
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6" /></svg>
+        </button>
+        <button id="start-btn" style="position:absolute;top:30%;height:10vh;display:none;" aria-label="Start Emotion Recognition Game" onclick="startGame()">
+          Start Game
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" /></svg>
+        </button>
+      </div>
+    </section>
+
+    <section id="game-module" aria-label="Emotion recognition game" style="display:none;">
+      <h1>Match the Emotion!</h1>
+      <div class="emotion-card" id="game-face-card" style="margin-bottom: 1.5em;">
+        <img id="face-img" src="" alt="Face showing emotion" draggable="false" aria-live="off" />
+      </div>
+      <div class="center-container">
+        <div id="emotion-btns"></div>
+      </div>
+      <div id="feedback" role="alert" aria-live="assertive" aria-atomic="true"></div>
+      <div id="scorecard" aria-live="polite">Score: 0 / 0</div>
+      <button id="next-btn" onclick="nextRound()" style="display:none;">Next</button>
+      <button id="quit-btn" onclick="showQuitPage()" style="margin-left:20%; margin-top:1.6em; background:#d86d47; color:white; font-weight:800; font-size:1.2rem; border-radius:34px; box-shadow:0 5px 20px #d86d47aa;">Quit</button>
+    </section>
+  </main>
+
+  <div id="quit-page" role="dialog" aria-modal="true" aria-labelledby="game-over" aria-describedby="final-score" tabindex="-1">
+    <div class="stars">&#11088;&#11088;&#11088;&#11088;&#11088;</div>
+    <div id="game-over" class="game-over">GAME OVER</div>
+    <div class="final-score-label">Your Score</div>
+    <div id="final-score" class="final-score">0</div>
+    <button onclick="restartGame()">Replay</button>
+    <button onclick="exitGame()">Quit</button>
+    <div class="thanks">Thank you for playing!</div>
+  </div>
+
+  <audio id="sound-correct" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+  <audio id="sound-wrong" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio> 
+
+  <script>
+    const EMOTIONS = [
+      { answer: "Happy", img: "file:///D:/7200/happy.png", labelClass: "happy" },
+      { answer: "Sad", img: "file:///D:/7200/sad.png", labelClass: "sad" },
+      { answer: "Angry", img: "file:///D:/7200/angry.png", labelClass: "angry" },
+      { answer: "Scared", img: "file:///D:/7200/scared.png", labelClass: "scared" },
+      { answer: "Excited", img: "file:///D:/7200/excited.png", labelClass: "excited" },
+      { answer: "Silly", img: "file:///D:/7200/silly.png", labelClass: "silly" },
+      { answer: "Surprised", img: "file:///D:/7200/surprise.png", labelClass: "surprised" },
+      { answer: "Shy", img: "file:///D:/7200/shy.png", labelClass: "shy" },
+      { answer: "Embarrassed", img: "file:///D:/7200/embarrase.png", labelClass: "embarrassed" },
+    ];
+
+    let introIndex = 0;
+    let sequence = [];
+    let current = 0;
+    let allowAnswer = true;
+    let speaking = false;
+    let score = 0;
+    let total = 0;
+
+    const soundCorrect = document.getElementById("sound-correct");
+    const soundWrong = document.getElementById("sound-wrong");
+
+    function speak(text, callback) {
+      if ("speechSynthesis" in window && !speaking) {
+        speaking = true;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1;
+        utterance.lang = "hi-IN";
+        utterance.onend = () => {
+          speaking = false;
+          if (callback) callback();
+        };
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      } else if (callback) {
+        callback();
+      }
+    }
+
+    window.onload = () => {
+      showIntroEmotion(introIndex)
+      document.getElementById("intro-module").style.display = "";
+      createEmotionButtons();
+    };
+   
+
+    function showIntroEmotion(idx) {
+      const emotion = EMOTIONS[idx];
+      const faceImg = document.getElementById("intro-face-img");
+      const emoName = document.getElementById("emotion-name");
+      faceImg.src = emotion.img;
+      faceImg.alt = emotion.answer + " face";
+      emoName.className = "emotion-label " + emotion.labelClass.toLowerCase();
+      emoName.textContent = "";
+      speak(`This is a ${emotion.answer} face.`, () => {
+        emoName.textContent = emotion.answer;
+      });
+      const nextBtn = document.getElementById("intro-next-btn");
+      const startBtn = document.getElementById("start-btn");
+      if (idx === EMOTIONS.length - 1) {
+        nextBtn.style.display = "none";
+        startBtn.style.display = "";
+      } else {
+        nextBtn.style.display = "";
+        startBtn.style.display = "none";
+      }
+    }
+
+    function nextIntroEmotion() {
+      introIndex++;
+      if (introIndex < EMOTIONS.length) {
+        showIntroEmotion(introIndex);
+      }
+    }
+
+    function startGame() {
+      document.getElementById("intro-module").style.display = "none";
+      document.getElementById("game-module").style.display = "";
+      sequence = shuffle([...EMOTIONS]);
+      current = 0;
+      score = 0;
+      total = 0;
+      updateScorecard();
+      loadRound();
+    }
+
+    function shuffle(arr) {
+      let a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function loadRound() {
+      allowAnswer = true;
+      document.querySelectorAll(".emotion-btn").forEach((b) => {
+        b.disabled = false;
+        b.classList.remove("selected");
+      });
+
+      const round = sequence[current];
+
+      // Update face image/card as before
+      const faceImg = document.getElementById("face-img");
+      const feedback = document.getElementById("feedback");
+      const faceCard = document.getElementById("game-face-card");
+      faceCard.classList.remove("anim-correct", "anim-wrong", "happy-size");
+      faceImg.src = round.img;
+      faceImg.alt = round.answer + " face";
+      feedback.textContent = "";
+      speak("Which emotion?");
+      document.getElementById("next-btn").style.display = "none";
+
+      if (round.answer.toLowerCase() === "happy") {
+        faceCard.classList.add("happy-size");
+      }
+
+      // Create limited buttons with correct answer included
+      createEmotionButtons(round.answer);
+    }
+
+    function createEmotionButtons(correctAnswer) {
+      const btnContainer = document.getElementById("emotion-btns");
+      btnContainer.innerHTML = "";
+
+      // Get the correct emotion + 3 random wrong options
+      const options = getRandomOptions(correctAnswer, 4);
+
+      options.forEach((emotion) => {
+        const btn = document.createElement("button");
+        btn.className = "emotion-btn";
+        btn.textContent = emotion.answer;
+        btn.onclick = () => optionClicked(emotion.answer);
+        btn.onmouseover = () => speak(emotion.answer);
+        btn.onfocus = () => speak(emotion.answer);
+        btn.type = "button";
+        btn.id = "btn-" + emotion.answer.toLowerCase();
+        btnContainer.appendChild(btn);
+      });
+    }
+
+    function getRandomOptions(correctAnswer, count) {
+      const wrongEmotions = EMOTIONS.filter((e) => e.answer !== correctAnswer);
+      const shuffledWrong = shuffle(wrongEmotions).slice(0, count - 1);
+      const correctEmotion = EMOTIONS.find((e) => e.answer === correctAnswer);
+      const options = [...shuffledWrong, correctEmotion];
+      return shuffle(options);
+    }
+
+    function optionClicked(choice) {
+      if (!allowAnswer) return;
+      speak(choice, () => {
+        checkAnswer(choice);
+      });
+    }
+
+    function checkAnswer(choice) {
+      if (!allowAnswer) return;
+      allowAnswer = false;
+      document.querySelectorAll(".emotion-btn").forEach((b) => (b.disabled = true));
+      const round = sequence[current];
+      const correct = round.answer;
+      const feedback = document.getElementById("feedback");
+      const faceCard = document.getElementById("game-face-card");
+
+      total++; // increment total attempts at each answer check
+
+      if (choice === correct) {
+        score++; // increase correct count
+        speak(`Well done! That's ${correct}!`);
+        feedback.textContent = `Well done! That's ${correct}!`;
+        feedback.style.color = "#448d2b";
+        faceCard.classList.remove("anim-wrong");
+        faceCard.classList.add("anim-correct");
+        soundCorrect.play();
+        updateScorecard();
+        setTimeout(() => {
+          current++;
+          if (current >= sequence.length) {
+            sequence = shuffle([...EMOTIONS]);
+            current = 0;
+          }
+          loadRound();
+        }, 2200);
+      } else {
+        speak(`Try again! That was not ${choice}.`);
+        feedback.textContent = "Try again!";
+        feedback.style.color = "#e37043";
+        faceCard.classList.remove("anim-correct");
+        faceCard.classList.add("anim-wrong");
+        soundWrong.play();
+        allowAnswer = true;
+        document.querySelectorAll(".emotion-btn").forEach((b) => (b.disabled = false));
+        setTimeout(() => {
+          faceCard.classList.remove("anim-wrong");
+        }, 600);
+      }
+    }
+
+    function nextRound() {
+      current++;
+      if (current >= sequence.length) {
+        sequence = shuffle([...EMOTIONS]);
+        current = 0;
+      }
+      loadRound();
+    }
+
+    function updateScorecard() {
+      const scorecard = document.getElementById("scorecard");
+      scorecard.textContent = `Score: ${score} / ${total}`;
+    }
+
+    function showQuitPage() {
+      document.getElementById("container").style.display = "none";
+      document.getElementById("quit-page").style.display = "block";
+      document.getElementById("final-score").textContent = score + " / " + total;
+    }
+
+    function restartGame() {
+      document.getElementById("quit-page").style.display = "none";
+      document.getElementById("container").style.display = "flex";
+      startGame();
+    }
+
+    function exitGame() {
+      window.location.href = "https://www.google.com"; // Customize exit action
+    }
+  </script>
+</body>
+</html>
