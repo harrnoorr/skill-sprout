@@ -243,9 +243,6 @@
     speak(letter.toLowerCase(), () => {
       setTimeout(() => {
         speak('is for', () => {
-          setTimeout(() => {
-            speak(word);
-          }, 600);
         });
       }, 600);
     });
