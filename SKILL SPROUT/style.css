@@ -57,6 +57,24 @@
       color: #14464b;
     }
 
+    .navbar .login-btn {
+      margin-left: auto;
+      margin-right: 30px;
+    }
+
+    .login-btn a {
+      margin-left: auto;
+      background-color: white;
+      color: #f57c00;
+      padding: 8px 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .login-btn a:hover {
+      background-color: #FFDE59;
+    }
     /* Search box */
     .navbar .search-box input {
       padding: 5px 10px;
@@ -152,4 +170,5 @@
   bottom: 0; 
   left: 50%; 
   transform: translateX(-50%); 
+
 }
